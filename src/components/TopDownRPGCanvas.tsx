@@ -757,6 +757,119 @@ function renderGroundLayer(
     return;
   }
 
+  // 0. 校門口椰林大道 (Palm Boulevard - Asphalt Road & Royal Palm Trees)
+  if (map.id === 'palm-boulevard') {
+    // 兩側熱帶綠蔭植栽草地
+    ctx.fillStyle = '#2d6a4f';
+    ctx.fillRect(0, 0, map.width, map.height);
+
+    // 中央民權東路筆直雙向瀝青柏油大道 (寬度 400，從 x: 200 到 600)
+    ctx.fillStyle = '#374151';
+    ctx.fillRect(200, 0, 400, map.height);
+
+    // 兩側路肩紅實線
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(215, 0);
+    ctx.lineTo(215, map.height);
+    ctx.moveTo(585, 0);
+    ctx.lineTo(585, map.height);
+    ctx.stroke();
+
+    // 兩側路肩排水邊界白線
+    ctx.strokeStyle = '#f9fafb';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(230, 0);
+    ctx.lineTo(230, map.height);
+    ctx.moveTo(570, 0);
+    ctx.lineTo(570, map.height);
+    ctx.stroke();
+
+    // 中央車道雙黃實線 (標誌性大溪國中民權東路路面)
+    ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(395, 0);
+    ctx.lineTo(395, map.height);
+    ctx.moveTo(405, 0);
+    ctx.lineTo(405, map.height);
+    ctx.stroke();
+
+    // 路面大字印花【民權東路】(向校門透視)
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.font = '900 32px "Noto Sans TC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('民 權 東 路', 400, 1380);
+    ctx.fillText('大 溪 國 中', 400, 680);
+
+    // 斑馬線迎賓格
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    for (let bx = 240; bx <= 560; bx += 32) {
+      ctx.fillRect(bx, 150, 20, 40);
+    }
+    ctx.restore();
+
+    // 北端大溪國中宏偉正校門 (白色立柱 + 頂端金色明珠)
+    // 左立柱
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(230, 80, 90, 80);
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(230, 80, 90, 80);
+    // 左金球
+    const goldGradL = ctx.createRadialGradient(275, 75, 4, 275, 75, 22);
+    goldGradL.addColorStop(0, '#fef08a');
+    goldGradL.addColorStop(0.5, '#eab308');
+    goldGradL.addColorStop(1, '#a16207');
+    ctx.fillStyle = goldGradL;
+    ctx.beginPath();
+    ctx.arc(275, 75, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // 右立柱 (警衛室門面)
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(480, 80, 90, 80);
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(480, 80, 90, 80);
+    // 右金球
+    const goldGradR = ctx.createRadialGradient(525, 75, 4, 525, 75, 22);
+    goldGradR.addColorStop(0, '#fef08a');
+    goldGradR.addColorStop(0.5, '#eab308');
+    goldGradR.addColorStop(1, '#a16207');
+    ctx.fillStyle = goldGradR;
+    ctx.beginPath();
+    ctx.arc(525, 75, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // 門楣橫幅校名
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(320, 85, 160, 24);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('桃園市立大溪國民中學', 400, 101);
+
+    // 沿途繪製 12 棵高聳大王椰子樹 (左右兩側，巨大棕櫚樹冠與灰白節環樹幹)
+    const treeYCoords = [260, 460, 680, 900, 1120, 1340];
+    for (const ty of treeYCoords) {
+      // 左側椰子樹
+      drawRoyalPalmTree(ctx, 190, ty);
+      // 右側椰子樹
+      drawRoyalPalmTree(ctx, 610, ty);
+    }
+    return;
+  }
+
   const buildingId = map.buildingId || '';
 
   // 1. 科技館 (Tech Lab Interior)
@@ -933,6 +1046,93 @@ function renderGroundLayer(
     ctx.fillStyle = grad;
     ctx.fillRect(wx - 25, 120, 50, 100);
   }
+}
+
+/**
+ * 大溪國中民權東路大王椰子樹專屬繪製函式 (Royal Palm Tree)
+ * 依照真實照片特徵：高聳筆直、灰白色粗壯樹幹帶水平節環、微膨大基部、繁茂熱帶棕櫚葉冠與落影
+ */
+function drawRoyalPalmTree(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  ctx.save();
+
+  // 1. 地面自然陰影
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+  ctx.beginPath();
+  ctx.ellipse(x + 10, y + 10, 36, 16, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 2. 樹根與基座 (大王椰子基部微圓膨大特徵)
+  const baseGrad = ctx.createLinearGradient(x - 14, y, x + 14, y);
+  baseGrad.addColorStop(0, '#64748b');
+  baseGrad.addColorStop(0.5, '#cbd5e1');
+  baseGrad.addColorStop(1, '#475569');
+  ctx.fillStyle = baseGrad;
+  ctx.beginPath();
+  ctx.ellipse(x, y + 2, 15, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 3. 樹幹 (灰白柱狀，帶橫向年輪節環)
+  const trunkW = 16;
+  const trunkH = 80;
+  const trunkGrad = ctx.createLinearGradient(x - trunkW / 2, y - trunkH, x + trunkW / 2, y);
+  trunkGrad.addColorStop(0, '#94a3b8');
+  trunkGrad.addColorStop(0.4, '#e2e8f0');
+  trunkGrad.addColorStop(1, '#64748b');
+
+  ctx.fillStyle = trunkGrad;
+  ctx.beginPath();
+  ctx.roundRect(x - trunkW / 2, y - trunkH, trunkW, trunkH, 4);
+  ctx.fill();
+
+  // 樹幹水平環狀橫紋
+  ctx.strokeStyle = 'rgba(71, 85, 105, 0.45)';
+  ctx.lineWidth = 1.2;
+  for (let ringY = y - trunkH + 10; ringY < y; ringY += 12) {
+    ctx.beginPath();
+    ctx.moveTo(x - trunkW / 2 + 1, ringY);
+    ctx.lineTo(x + trunkW / 2 - 1, ringY);
+    ctx.stroke();
+  }
+
+  // 4. 上段鮮綠色葉鞘 (大王椰子頂部光滑深綠色葉鞘段)
+  ctx.fillStyle = '#15803d';
+  ctx.beginPath();
+  ctx.roundRect(x - trunkW / 2 + 1, y - trunkH - 18, trunkW - 2, 20, 2);
+  ctx.fill();
+
+  // 5. 傘狀放射羽狀椰林葉冠 (放射狀舒展向下垂彎的大王椰子葉)
+  const crownY = y - trunkH - 16;
+  const frondCount = 10;
+  for (let i = 0; i < frondCount; i++) {
+    const angle = (i / frondCount) * Math.PI * 2;
+    const len = 42 + (i % 2) * 12;
+
+    ctx.save();
+    ctx.translate(x, crownY);
+    ctx.rotate(angle);
+
+    // 主葉軸
+    ctx.strokeStyle = i % 2 === 0 ? '#166534' : '#15803d';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(len * 0.5, -8, len, 12);
+    ctx.stroke();
+
+    // 羽狀細葉裂片
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 1.5;
+    for (let f = 10; f < len; f += 7) {
+      const drop = (f / len) * 10;
+      ctx.beginPath();
+      ctx.moveTo(f, drop - 5);
+      ctx.lineTo(f + 4, drop + 9);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  ctx.restore();
 }
 
 /**

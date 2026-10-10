@@ -213,6 +213,21 @@ export const CAMPUS_MAP: MapDefinition = {
         clue: '【數學線索 1】以原點 0 為界，向右為正數、向左為負數；地下為負數、地上為正數。',
       },
     },
+    // 南端校門口出入口：通往民權東路椰林大道 (Royal Palm Boulevard)
+    {
+      id: 'portal-palm-boulevard',
+      type: 'portal',
+      name: '大溪國中正門出口 (椰林大道)',
+      doorPlate: '往 椰林大道 (民權東路) 🌴',
+      x: 720,
+      y: 990,
+      width: 140,
+      height: 35,
+      interactionRadius: 65,
+      promptText: '按 [E] 前往校門口民權東路椰林大道',
+      targetMapId: 'palm-boulevard',
+      targetSpawn: { x: 400, y: 150 },
+    },
     // 大溪國中 80 週年時光紀念石碑 (慶祝校慶核心彩蛋)
     {
       id: 'monument-daxi-80th',

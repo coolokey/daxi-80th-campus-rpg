@@ -1,4 +1,5 @@
 import { CAMPUS_MAP } from './campus';
+import { PALM_BOULEVARD_MAP } from './palm-boulevard';
 import { TECH_LAB_MAP, getTechLabMap } from './tech-lab';
 import { BUILDING_TECH_2F_MAP } from './building-tech';
 import {
@@ -37,6 +38,9 @@ import { BUILDING_ACTIVITY_MAP } from './building-activity';
 import type { MapDefinition } from '../../types/rpg';
 
 export const MAP_REGISTRY: Record<string, MapDefinition> = {
+  // 校門口椰林大道
+  'palm-boulevard': PALM_BOULEVARD_MAP,
+
   // 校園戶外地圖
   'campus-outdoor': CAMPUS_MAP,
 
