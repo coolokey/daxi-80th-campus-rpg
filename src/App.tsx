@@ -72,7 +72,7 @@ export default function App() {
       <header className="app-header">
         <p className="eyebrow">大溪國中 × 2D Top-Down RPG 探索冒險</p>
         <h1>未來科技校園 RPG</h1>
-        <p>第一章：能源核心修復（操作實體角色走過校園走道，進入科技館接取任務）</p>
+        <p>創校 80 週年校慶特輯：漫步民權東路椰林大道、探訪司令台壁畫、走訪迎曦廣場與修復科技能源核心</p>
       </header>
 
       {/* 2D Top-Down RPG Viewport: Active unless in full quest or summary screen */}

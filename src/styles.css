@@ -42,29 +42,37 @@ main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 
   position: absolute;
   top: 12px;
   left: 14px;
-  right: 190px;
+  right: 185px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
   z-index: 10;
   pointer-events: none;
 }
 
 .hud-location-tag,
 .hud-mission-tag,
+.hud-chips-tag,
 .hud-control-hint {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(10px);
   color: #f1f5f9;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 99px;
   border: 1px solid rgba(56, 189, 248, 0.45);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hud-chips-tag {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.5);
 }
 
 .hud-mission-tag {
@@ -242,7 +250,7 @@ main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 
   .rpg-hud-bar {
     right: 14px;
   }
-  .hud-location-tag, .hud-mission-tag, .hud-control-hint {
+  .hud-location-tag, .hud-mission-tag, .hud-chips-tag, .hud-control-hint {
     font-size: 0.72rem;
     padding: 4px 8px;
   }
@@ -251,6 +259,94 @@ main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 
     font-size: 0.85rem;
     padding: 8px 16px;
   }
+  .campus-fast-travel-bar {
+    padding: 0.5rem 0.75rem;
+    gap: 8px;
+  }
+  .fast-travel-btn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+}
+
+/* Campus Fast-Travel Navigator Bar */
+.campus-fast-travel-bar {
+  margin-top: 0.85rem;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.fast-travel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #38bdf8;
+  white-space: nowrap;
+}
+
+.fast-travel-icon {
+  font-size: 1.1rem;
+}
+
+.fast-travel-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.fast-travel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  min-height: auto;
+}
+
+.fast-travel-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+}
+
+.fast-travel-btn--active {
+  background: linear-gradient(135deg, #0284c7, #06b6d4) !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.6) !important;
+}
+
+.fast-travel-btn--anniversary {
+  background: linear-gradient(135deg, #ea580c, #f59e0b) !important;
+  border-color: #fde047 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+}
+
+.fast-travel-btn--anniversary:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
 }
 
 /* JRPG Dialogue Box Overlay */

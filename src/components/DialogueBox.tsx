@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { getAssetUrl } from '../utils/assets';
 
 type DialogueBoxProps = {
   name: string;
@@ -36,7 +37,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
         {/* Left Character Portrait */}
         <div className="dialogue-portrait-wrapper">
           {portraitUrl ? (
-            <img src={portraitUrl} alt={`${name} 立繪`} className="dialogue-portrait-img" />
+            <img src={getAssetUrl(portraitUrl)} alt={`${name} 立繪`} className="dialogue-portrait-img" />
           ) : (
             <div className="dialogue-portrait-placeholder">
               <span>🧑‍🏫</span>

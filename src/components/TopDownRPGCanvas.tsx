@@ -16,6 +16,7 @@ import type {
 } from '../types/rpg';
 import { VirtualJoystick } from './VirtualJoystick';
 import { soundManager } from '../domain/audio';
+import { getAssetUrl } from '../utils/assets';
 
 type TopDownRPGCanvasProps = {
   initialMapId?: string;
@@ -127,7 +128,7 @@ export const TopDownRPGCanvas: React.FC<TopDownRPGCanvasProps> = ({
   // Preload background images
   useEffect(() => {
     const campusImg = new Image();
-    campusImg.src = '/assets/maps/daxi-future-campus-rpg-v1.png';
+    campusImg.src = getAssetUrl('/assets/maps/daxi-future-campus-rpg-v1.png');
     campusImg.onload = () => {
       mapImagesCache.current['campus-outdoor'] = campusImg;
     };
@@ -543,7 +544,8 @@ export const TopDownRPGCanvas: React.FC<TopDownRPGCanvasProps> = ({
   const breadcrumbText = breadcrumbList.join(' ❯ ');
 
   return (
-    <div className="rpg-viewport-container" aria-label="2D 校園 RPG 探索畫面">
+    <>
+      <div className="rpg-viewport-container" aria-label="2D 校園 RPG 探索畫面">
       {/* Top HUD Status Bar */}
       <div className="rpg-hud-bar">
         {/* Hierarchical Location Breadcrumb (Rule 88) */}
@@ -753,7 +755,80 @@ export const TopDownRPGCanvas: React.FC<TopDownRPGCanvasProps> = ({
         onInteract={triggerInteraction}
         canInteract={!!nearbyInteractable && !isLocked && !activeChallenge}
       />
-    </div>
+      </div>
+      {/* Campus Fast-Travel Navigator Bar (Rule 88, 80th Anniversary & Palm Boulevard) */}
+      <nav className="campus-fast-travel-bar" aria-label="校園快速漫遊導覽">
+        <div className="fast-travel-label">
+          <span className="fast-travel-icon">🗺️</span>
+          <span className="fast-travel-text">校園快捷傳送：</span>
+        </div>
+        <div className="fast-travel-buttons">
+          <button
+            type="button"
+            className={`fast-travel-btn ${activeMapId === 'palm-boulevard' ? 'fast-travel-btn--active' : ''}`}
+            onClick={() => {
+              soundManager.playBlip();
+              transitionToMap('palm-boulevard', { x: 400, y: 1350 });
+            }}
+            title="漫步校門口民權東路椰林大道 (12棵大王椰子樹、正校門立柱與金色明珠地標)"
+          >
+            🌴 校門椰林大道
+          </button>
+          <button
+            type="button"
+            className={`fast-travel-btn ${activeMapId === 'campus-outdoor' ? 'fast-travel-btn--active' : ''}`}
+            onClick={() => {
+              soundManager.playBlip();
+              transitionToMap('campus-outdoor', { x: 720, y: 780 });
+            }}
+            title="前往校園中庭迎曦廣場與 80 週年校慶紀念石碑"
+          >
+            🏛️ 迎曦中庭 (80週年碑)
+          </button>
+          <button
+            type="button"
+            className="fast-travel-btn"
+            onClick={() => {
+              soundManager.playBlip();
+              transitionToMap('campus-outdoor', { x: 330, y: 260 });
+            }}
+            title="操場司令台巨幅馬賽克壁畫「跨越巔峰・奔向朝陽」"
+          >
+            🏃 操場司令台壁畫
+          </button>
+          <button
+            type="button"
+            className={`fast-travel-btn ${activeMapId === 'tech-lab-interior' ? 'fast-travel-btn--active' : ''}`}
+            onClick={() => {
+              soundManager.playBlip();
+              transitionToMap('tech-lab-interior', { x: 400, y: 340 });
+            }}
+            title="進入科技館未來能源核心實驗室進行數學校準"
+          >
+            🔬 科技館 (能源核心)
+          </button>
+          <button
+            type="button"
+            className="fast-travel-btn"
+            onClick={() => {
+              soundManager.playBlip();
+              transitionToMap('campus-outdoor', { x: 720, y: 680 });
+            }}
+            title="前往員生消費合作社挑戰找零速算心算彩蛋"
+          >
+            🛒 合作社心算彩蛋
+          </button>
+          <button
+            type="button"
+            className="fast-travel-btn fast-travel-btn--anniversary"
+            onClick={triggerCelebration}
+            title="觸發大溪國中 80 週年校慶禮炮、歡慶光環與彩蛋視窗"
+          >
+            🎉 80週年校慶彩蛋
+          </button>
+        </div>
+      </nav>
+    </>
   );
 };
 
@@ -1163,31 +1238,90 @@ function renderCollisionDecorations(
   isCoreCalibrated: boolean,
   time: number
 ) {
-  // Walls base rendering
-  ctx.fillStyle = '#334155';
-  ctx.strokeStyle = '#1e293b';
-  ctx.lineWidth = 2;
+  // Walls base rendering: Only draw wall/furniture blocks for indoor maps!
+  // Outdoor maps (campus-outdoor & palm-boulevard) are rendered via background art and dedicated roadside procedural graphics.
+  if (map.id !== 'campus-outdoor' && map.id !== 'palm-boulevard') {
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 2;
 
-  for (const obs of map.obstacles) {
-    // Check if obstacle is a perimeter wall
-    if (obs.height >= 400 || obs.y === 0 || obs.y >= 450) {
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-      ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+    for (const obs of map.obstacles) {
+      // Check if obstacle is a perimeter wall
+      if (obs.height >= 400 || obs.y === 0 || obs.y >= 450) {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+        ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
 
-      // Top wall decorative classroom border
-      if (obs.y === 0 && obs.height >= 80) {
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(obs.x, obs.height - 10, obs.width, 10);
+        // Top wall decorative classroom border
+        if (obs.y === 0 && obs.height >= 80) {
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(obs.x, obs.height - 10, obs.width, 10);
+        }
+      } else {
+        // Internal structural furniture / columns / benches
+        ctx.fillStyle = '#475569';
+        ctx.beginPath();
+        ctx.roundRect(obs.x, obs.y, obs.width, obs.height, 6);
+        ctx.fill();
+        ctx.stroke();
       }
-    } else {
-      // Internal structural furniture / columns / benches
-      ctx.fillStyle = '#475569';
-      ctx.beginPath();
-      ctx.roundRect(obs.x, obs.y, obs.width, obs.height, 6);
-      ctx.fill();
-      ctx.stroke();
     }
+  }
+
+  // 大溪國中戶外中庭南校門引道 (通往民權東路椰林大道)
+  if (map.id === 'campus-outdoor') {
+    ctx.save();
+    // 柏油引道 (x: 630~810, y: 940~1031)
+    ctx.fillStyle = '#374151';
+    ctx.fillRect(630, 940, 180, 91);
+
+    // 兩側路緣紅實線
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(635, 940);
+    ctx.lineTo(635, 1031);
+    ctx.moveTo(805, 940);
+    ctx.lineTo(805, 1031);
+    ctx.stroke();
+
+    // 中央車道雙黃線
+    ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(716, 940);
+    ctx.lineTo(716, 1031);
+    ctx.moveTo(724, 940);
+    ctx.lineTo(724, 1031);
+    ctx.stroke();
+
+    // 迎賓斑馬線
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    for (let bx = 650; bx <= 780; bx += 22) {
+      ctx.fillRect(bx, 946, 14, 24);
+    }
+
+    // 兩側南校門白色立柱與金色圓球
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(620, 950, 18, 55);
+    ctx.fillRect(802, 950, 18, 55);
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(620, 950, 18, 55);
+    ctx.strokeRect(802, 950, 18, 55);
+
+    ctx.fillStyle = '#eab308';
+    ctx.beginPath();
+    ctx.arc(629, 944, 9, 0, Math.PI * 2);
+    ctx.arc(811, 944, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 大道指標路面標記
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.95)';
+    ctx.font = '900 12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('▼ 往 民權東路椰林大道 (南校門出口) ▼', 720, 985);
+    ctx.restore();
   }
 
   // Tech Lab Central Reactor
@@ -1261,9 +1395,11 @@ function renderInteractables(
 
     if (item.type === 'stairs') {
       drawStairsSprite(ctx, item, isSelected, time);
+    } else if (item.type === 'portal') {
+      drawPortalSprite(ctx, item, isSelected, time);
     } else if (item.doorPlate) {
       drawDoorPlateSprite(ctx, item, isSelected, time);
-    } else if (item.type === 'door' || item.type === 'portal') {
+    } else if (item.type === 'door') {
       drawDoorSprite(ctx, item, isSelected, time);
     } else if (item.type === 'collectible') {
       drawCollectibleSprite(ctx, item, isSelected, time);
@@ -1452,6 +1588,76 @@ function drawDoorSprite(
   ctx.font = 'bold 11px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(item.name, item.x, item.y - 12);
+}
+
+/**
+ * Dedicated Grand Portal Sprite (Campus Gateway & Boulevard Transitions)
+ */
+function drawPortalSprite(
+  ctx: CanvasRenderingContext2D,
+  item: Interactable,
+  isSelected: boolean,
+  time: number
+) {
+  const { x, y, width, height, name, promptText } = item;
+  const isPalm = item.id.includes('palm') || item.targetMapId === 'palm-boulevard';
+  const pulse = Math.sin(time / 200) * 0.25 + 0.75;
+
+  ctx.save();
+  // Portal glowing ground area
+  const baseColor = isPalm ? `rgba(22, 163, 74, ${0.45 * pulse})` : `rgba(2, 132, 199, ${0.45 * pulse})`;
+  const neonColor = isPalm ? '#4ade80' : '#38bdf8';
+
+  ctx.fillStyle = baseColor;
+  ctx.beginPath();
+  ctx.roundRect(x - width / 2, y - height / 2, width, height, 10);
+  ctx.fill();
+
+  ctx.strokeStyle = isSelected ? '#ffffff' : neonColor;
+  ctx.lineWidth = isSelected ? 3 : 2;
+  ctx.stroke();
+
+  // Direction chevron indicator
+  const arrowBounce = Math.sin(time / 160) * 3;
+  ctx.fillStyle = neonColor;
+  ctx.font = 'bold 16px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(isPalm ? '▼' : '▲', x, y + 6 + arrowBounce);
+
+  // Floating portal banner
+  const bounce = Math.sin(time / 180) * 2;
+  const bannerY = y - height / 2 - 18 + bounce;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+  ctx.beginPath();
+  ctx.roundRect(x - 100, bannerY - 12, 200, 24, 6);
+  ctx.fill();
+
+  ctx.strokeStyle = isSelected ? '#ffffff' : neonColor;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = isPalm ? '#86efac' : '#7dd3fc';
+  ctx.font = 'bold 11px system-ui, sans-serif';
+  ctx.fillText(name, x, bannerY + 4);
+
+  // Proximity balloon (< 65px)
+  if (isSelected) {
+    const promptY = bannerY - 30;
+    ctx.fillStyle = isPalm ? '#15803d' : '#0369a1';
+    ctx.beginPath();
+    ctx.roundRect(x - 110, promptY, 220, 24, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px system-ui, sans-serif';
+    ctx.fillText(promptText || '按 [E] 傳送移動', x, promptY + 16);
+  }
+
+  ctx.restore();
 }
 
 function drawCollectibleSprite(
