@@ -228,6 +228,24 @@ export const CAMPUS_MAP: MapDefinition = {
       targetMapId: 'palm-boulevard',
       targetSpawn: { x: 400, y: 150 },
     },
+    // 操場司令台後方「跨越巔峰・迎向朝陽」馬賽克壁畫
+    {
+      id: 'object-podium-mural',
+      type: 'object',
+      name: '操場司令台馬賽克壁畫',
+      doorPlate: '跨越巔峰 迎向朝陽 🏃',
+      x: 330,
+      y: 205,
+      width: 60,
+      height: 35,
+      interactionRadius: 65,
+      promptText: '✨【校園藝術】按 [E] 鑑賞司令台後方馬賽克壁畫',
+      npcData: {
+        title: '操場司令台巨幅馬賽克壁畫',
+        dialogue: '【操場司令台牆面壁畫：跨越巔峰・奔向朝陽】\n這幅經典的馬賽克磁磚鑲嵌壁畫，生動描繪了兩位溪中健兒在金黃朝陽映照下奮力跨越欄架、勇往直前的英姿！\n象徵大溪國中學子「文武兼備、不畏挑戰、超越自我」的運動家精神與青春活力！',
+        portraitUrl: '/assets/scenes/podium-mural.jpg',
+      },
+    },
     // 大溪國中 80 週年時光紀念石碑 (慶祝校慶核心彩蛋)
     {
       id: 'monument-daxi-80th',

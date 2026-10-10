@@ -579,6 +579,25 @@ export const TopDownRPGCanvas: React.FC<TopDownRPGCanvasProps> = ({
           互動
         </div>
 
+        {/* Quick Travel / Map Switch: 椰林大道 🌴 */}
+        <button
+          type="button"
+          className="hud-mission-tag"
+          style={{ background: 'linear-gradient(135deg, #15803d, #047857)', color: '#ffffff', cursor: 'pointer', pointerEvents: 'auto' }}
+          onClick={() => {
+            soundManager.playBlip();
+            if (activeMapId === 'palm-boulevard') {
+              transitionToMap('campus-outdoor', { x: 720, y: 920 });
+            } else {
+              transitionToMap('palm-boulevard', { x: 400, y: 1350 });
+            }
+          }}
+          title={activeMapId === 'palm-boulevard' ? '進入校園中庭' : '漫步校門口民權東路椰林大道'}
+        >
+          <span className="hud-icon">🌴</span>
+          <span className="hud-text">{activeMapId === 'palm-boulevard' ? '進入校園中庭 🏫' : '前往校門椰林大道 🌴'}</span>
+        </button>
+
         {/* 80th Anniversary Trigger Button (Accessible for Touch & Mouse) */}
         <button
           type="button"
@@ -1687,6 +1706,54 @@ function drawObjectSprite(
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 11px system-ui, sans-serif';
       ctx.fillText('按 [E] 探索 80 週年校史', x, promptY + 16);
+    }
+
+    ctx.restore();
+    return;
+  }
+
+  // 特殊渲染：操場司令台馬賽克壁畫
+  if (item.id === 'object-podium-mural') {
+    ctx.save();
+    // 司令台藍白壁面裝飾框
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.roundRect(x - 34, y - 24, 68, 38, 4);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 馬賽克金黃朝陽微縮壁畫圖示
+    const muralGrad = ctx.createLinearGradient(x - 28, y - 20, x + 28, y + 10);
+    muralGrad.addColorStop(0, '#f97316');
+    muralGrad.addColorStop(0.5, '#facc15');
+    muralGrad.addColorStop(1, '#0284c7');
+    ctx.fillStyle = muralGrad;
+    ctx.fillRect(x - 30, y - 20, 60, 30);
+
+    // 壁畫內奔馳跨欄小剪影
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 9px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏃 跨越巔峰', x, y - 4);
+    ctx.font = '8px system-ui, sans-serif';
+    ctx.fillText('司令台壁畫', x, y + 6);
+
+    if (isSelected) {
+      const bounce = Math.sin(time / 160) * 3;
+      const promptY = y - 48 + bounce;
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath();
+      ctx.roundRect(x - 90, promptY, 180, 24, 6);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px system-ui, sans-serif';
+      ctx.fillText('按 [E] 鑑賞司令台壁畫', x, promptY + 16);
     }
 
     ctx.restore();
